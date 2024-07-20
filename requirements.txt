@@ -1,0 +1,5 @@
+cryptography==3.4.8
+Flask==3.0.3
+PyJWT==2.8.0
+Requests==2.32.3
+hmac==3.12.0

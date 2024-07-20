@@ -6,10 +6,13 @@ if [ -z "$1" ]; then
 fi
 
 BRANCH_NAME=$1
+PR_NUMBER=$2
 REMOTE_USER="root"
 REMOTE_HOST="46.101.11.165"
 REPO_URL="https://github.com/neyo55/hng-stage4-pr-with-github-bot.git"
 REMOTE_DIR="/tmp/monk-$BRANCH_NAME"
+TIMESTAMP=$(date +%s)
+CONTAINER_INFO_FILE="/tmp/container_info_${BRANCH_NAME}_${PR_NUMBER}_${TIMESTAMP}.txt"
 
 # Function to find a random available port in the range 4000-7000
 find_random_port() {
@@ -28,8 +31,8 @@ find_random_port() {
 # Get an available random port
 PORT=$(find_random_port)
 
-# Unique container name based on branch and port
-CONTAINER_NAME="container_${BRANCH_NAME}_${PORT}"
+# Unique container name based on branch, port, and PR number
+CONTAINER_NAME="container_${BRANCH_NAME}_${PR_NUMBER}_${PORT}"
 
 ssh -o LogLevel=ERROR -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST << EOF
   # Remove existing directory if it exists to avoid conflicts
@@ -67,6 +70,10 @@ ssh -o LogLevel=ERROR -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST << E
   # Run the Docker container with the random port and unique container name
   docker run -d -p $PORT:80 --name $CONTAINER_NAME $CONTAINER_NAME
 
-  # Provide the deployment link
+  # Save container name and port information to a file for cleanup
+  echo "$CONTAINER_NAME $PORT" > $CONTAINER_INFO_FILE
+
+  # Output the container name and deployment link
+  echo "Container name: $CONTAINER_NAME"
   echo "Deployment complete: http://46.101.11.165:$PORT"
 EOF

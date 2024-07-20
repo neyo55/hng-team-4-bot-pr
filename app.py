@@ -67,29 +67,43 @@ def webhook():
         return jsonify({'message': 'Invalid signature'}), 401
 
     data = request.json
-    if 'action' in data and data['action'] in ['opened', 'synchronize'] and 'pull_request' in data:
+    action = data.get('action')
+    if 'pull_request' in data:
         pr_number = data['pull_request']['number']
         repo_name = data['repository']['full_name']
         branch_name = data['pull_request']['head']['ref']
         installation_id = data['installation']['id']
-        
-        # Get installation access token
-        access_token = get_installation_access_token(installation_id)
-        comment_url = f"https://api.github.com/repos/{repo_name}/issues/{pr_number}/comments"
 
-        # Notify stakeholders (comment on the PR)
-        notify_stakeholders(comment_url, "Deployment started for this pull request.", access_token)
+        if action in ['opened', 'synchronize']:
+            # Get installation access token
+            access_token = get_installation_access_token(installation_id)
+            comment_url = f"https://api.github.com/repos/{repo_name}/issues/{pr_number}/comments"
 
-        # Run the deployment script with the branch name
-        deployment_link = run_deployment_script(branch_name)
+            # Notify stakeholders (comment on the PR)
+            notify_stakeholders(comment_url, "Deployment started for this pull request.", access_token)
 
-        # Notify stakeholders with the result
-        if deployment_link:
-            notify_stakeholders(comment_url, f"Deployment successful. [Deployed application]({deployment_link}).", access_token)
-        else:
-            notify_stakeholders(comment_url, "Deployment failed. Please check the logs.", access_token)
+            # Run the deployment script with the branch name and PR number
+            container_name, deployment_link = run_deployment_script(branch_name, pr_number)
 
-        return jsonify({'message': 'Deployment processed'}), 200
+            # Notify stakeholders with the result
+            if deployment_link:
+                notify_stakeholders(comment_url, f"Deployment successful. [Deployed application]({deployment_link}).", access_token)
+            else:
+                notify_stakeholders(comment_url, "Deployment failed. Please check the logs.", access_token)
+
+            return jsonify({'message': 'Deployment processed'}), 200
+
+        elif action == 'closed':
+            # Pull request closed, trigger cleanup regardless of merge status
+            run_cleanup_script(branch_name, pr_number)
+            
+            # Notify stakeholders about the cleanup
+            access_token = get_installation_access_token(installation_id)
+            comment_url = f"https://api.github.com/repos/{repo_name}/issues/{pr_number}/comments"
+            notify_stakeholders(comment_url, "Cleanup completed for this pull request.", access_token)
+
+        return jsonify({'message': 'Cleanup processed'}), 200
+
     return jsonify({'message': 'No action taken'}), 200
 
 def notify_stakeholders(comment_url, message, access_token):
@@ -102,21 +116,29 @@ def notify_stakeholders(comment_url, message, access_token):
     if response.status_code != 201:
         print(f"Failed to comment on PR: {response.json()}")
 
-def run_deployment_script(branch_name):
+def run_deployment_script(branch_name, pr_number):
     try:
-        result = subprocess.run(['./deploy.sh', branch_name], check=True, capture_output=True, text=True)
+        result = subprocess.run(['./deploy.sh', branch_name, str(pr_number)], check=True, capture_output=True, text=True)
         print(result.stdout)
 
-        # Extract deployment URL from the output
-        match = re.search(r'Deployment complete: (http://[^\s]+)', result.stdout)
-        if match:
-            return match.group(1)
-        else:
-            return None
+        # Extract container name and deployment URL from the output
+        container_name_match = re.search(r'Container name: ([^\s]+)', result.stdout)
+        deployment_url_match = re.search(r'Deployment complete: (http://[^\s]+)', result.stdout)
+        container_name = container_name_match.group(1) if container_name_match else None
+        deployment_url = deployment_url_match.group(1) if deployment_url_match else None
+
+        return container_name, deployment_url
 
     except subprocess.CalledProcessError as e:
         print(f"Deployment script failed with error: {e.stderr}")
-        return None
+        return None, None
+
+def run_cleanup_script(branch_name, pr_number):
+    try:
+        subprocess.run(['./cleanup.sh', branch_name, str(pr_number)], check=True)
+        print("Cleanup script executed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Cleanup script failed with error: {e.stderr}")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

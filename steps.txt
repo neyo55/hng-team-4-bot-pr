@@ -10,7 +10,7 @@
 
 ############# POSSIBLE IMPROVEMENTS ###########################
 
-1. To cleanup the server
+1. To cleanup the server : Ensure the bot cleans up containers and resources associated with closed PRs.
 
 2. The BOT logo or pcture
 
