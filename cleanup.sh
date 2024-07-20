@@ -6,8 +6,8 @@ if [ -z "$1" ]; then
 fi
 
 BRANCH_NAME=$1
-REMOTE_USER="root"
-REMOTE_HOST="46.101.11.165"
+REMOTE_USER="team-4"
+REMOTE_HOST="91.229.239.118"
 PR_NUMBER=$2
 
 ssh -o LogLevel=ERROR -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST << EOF

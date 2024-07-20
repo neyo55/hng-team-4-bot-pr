@@ -7,10 +7,10 @@ fi
 
 BRANCH_NAME=$1
 PR_NUMBER=$2
-REMOTE_USER="root"
-REMOTE_HOST="46.101.11.165"
-REPO_URL="https://github.com/neyo55/hng-stage4-pr-with-github-bot.git"
-REMOTE_DIR="/tmp/monk-$BRANCH_NAME"
+REMOTE_USER="team-4"
+REMOTE_HOST="91.229.239.118"
+REPO_URL="https://github.com/neyo55/hng-team-4-docker-app.git"
+REMOTE_DIR="/tmp/team4-$BRANCH_NAME"
 TIMESTAMP=$(date +%s)
 CONTAINER_INFO_FILE="/tmp/container_info_${BRANCH_NAME}_${PR_NUMBER}_${TIMESTAMP}.txt"
 
@@ -75,5 +75,5 @@ ssh -o LogLevel=ERROR -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST << E
 
   # Output the container name and deployment link
   echo "Container name: $CONTAINER_NAME"
-  echo "Deployment complete: http://46.101.11.165:$PORT"
+  echo "Deployment complete: http://$REMOTE_HOST:$PORT"
 EOF
