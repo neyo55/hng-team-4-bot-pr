@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ "$(id -u)" -ne 0 ]]; then
+  sudo -E "$0" "$@"
+  exit
+fi
+
 if [ -z "$1" ]; then
   echo "Branch name not provided."
   exit 1
