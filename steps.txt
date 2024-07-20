@@ -18,5 +18,5 @@
 
 4. Implement security group on the server for port range
 
-5. Documentation 
+5. Documentation and report 
 
