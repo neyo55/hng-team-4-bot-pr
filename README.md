@@ -1,4 +1,4 @@
-# Documentation for GitHub Bot Repository
+# Detailed Documentation on GitHub Bot Deployment with Setup Guide
 
 ### Overview:
 This repository contains the code for the GitHub bot that interacts with pull requests (PRs). The bot provides real-time deployment status updates, including links to the deployed environments. It also cleans up containers and resources associated with closed PRs.
