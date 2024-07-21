@@ -7,7 +7,6 @@ This repository contains the code for the GitHub bot that interacts with pull re
 - **cleanup.sh**: Event handlers for containers clean up.
 - **deploy.sh**: Event handlers for deployment and PR events.
 - **requirements.txt**: List of Python dependencies.
-- **steps.txt**: 
 
 ### Prerequisites:
 - Python 3.8 or higher installed.
