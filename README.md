@@ -142,7 +142,7 @@ This repository contains the code for the GitHub bot that interacts with pull re
        - **Contents**: Read & write
        - **Pull requests**: Read & write
          ![Permission](./images/permission.jpg)
-         
+
      - Under **Subscribe to events**, select the **Pull request** event.
        ![Events](./images/subsribe-event.jpg)
 
@@ -468,9 +468,9 @@ Please note that this readme is written based on running the flask application o
     echo "Deployment complete: http://$REMOTE_HOST:$PORT"
     ```
 
-    **`cleanup.sh`**
+**`cleanup.sh`**
 
-    This script cleans up Docker containers created for a specific branch and PR.
+- This script cleans up Docker containers created for a specific branch and PR.
 
     ```bash
     #!/bin/bash
