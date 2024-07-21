@@ -141,7 +141,11 @@ This repository contains the code for the GitHub bot that interacts with pull re
      - Under **Permissions**, set the required permissions for your app. For this bot, you will need:
        - **Contents**: Read & write
        - **Pull requests**: Read & write
+         ![Permission](./images/permission.jpg)
+         
      - Under **Subscribe to events**, select the **Pull request** event.
+       ![Events](./images/subsribe-event.jpg)
+
    - **Where can this GitHub App be installed?**: Choose **Only on this account** if you want it limited to your repositories. in our case it was installed in the docker app repository. **(neyo55/hng-team-4-docker-app)**
 
 - **Create the App**:
