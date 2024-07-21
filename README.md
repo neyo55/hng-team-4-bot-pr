@@ -141,7 +141,7 @@ This repository contains the code for the GitHub bot that interacts with pull re
      - Under **Permissions**, set the required permissions for your app. For this bot, you will need:
        - **Contents**: Read & write
        - **Pull requests**: Read & write
-         ![Permission](./images/permission.jpg)
+         ![Permission](./images/pull request permission.jpg)
 
      - Under **Subscribe to events**, select the **Pull request** event.
        ![Events](./images/subsribe-event.jpg)
