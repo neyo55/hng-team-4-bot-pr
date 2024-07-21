@@ -465,7 +465,7 @@ Please note that this readme is written based on running the flask application o
     echo "Deployment complete: http://$REMOTE_HOST:$PORT"
     ```
 
-    ### cleanup.sh
+    **`cleanup.sh`**
 
     This script cleans up Docker containers created for a specific branch and PR.
 
